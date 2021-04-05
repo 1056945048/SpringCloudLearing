@@ -1,0 +1,38 @@
+server:
+  port: 8091
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: limit_route
+          uri: http://httpbin.org:80/get
+          predicates:
+            - Path=/customer/**
+            - After=2017-01-20T17:42:47.789-07:00[America/Denver]
+          filters:
+            - StripPrefix=1
+            # ---
+            - name: RequestRateLimiter #这是gateway官方自身提供的一个限流的类
+              args:
+                key-resolver: '#{@remoteAddrKeyResolver}' #用于限流的键的解析器的Bean对象的名字，根据SPEL表达式从IOC容器获取对象
+                redis-rate-limiter.replenishRate: 1 #令牌桶每秒填充平均速率
+                redis-rate-limiter.burstCapacity: 5 #令牌桶总容量
+            - AddResponseHeader=X-Response-Default-Foo, Default-Bar
+
+  application:
+    name: gateway-limiter
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+logging:
+  level:
+    org.springframework.cloud.gateway: debug
+    com.yibo.filter: debug

@@ -1,0 +1,26 @@
+server:
+  port: 8000
+spring:
+  application:
+    name: rabbit
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    #开启发送确认
+    publisher-confirms: true
+    #开启发送失败退回
+    publisher-returns: false
+    listener:
+      #开启ACK
+      direct:
+         # 配置为manual 表示
+        acknowledge-mode: auto
+      simple:
+        acknowledge-mode: auto
+    template:
+      retry:
+        enabled: false
+
+

@@ -1,0 +1,34 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: sc-gateway-service
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true #表示开启gateway的服务注册和发现并且gateway自动根据服务发现为每一个注册的服务创建一个router
+                        #这个router将以服务名开头的请求路径转发到对应的服务 localhost:8081/service-hi/hi?name=1323，
+          lower-case-service-id: true #配置gateway发现的服务名为小写，因为注册中心为大写
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+
+#如果请求中不想要这个服务名该如何做呢 localhost:8081/service-hi/hi?name=1323
+#spring:
+#  cloud:
+#    gateway:
+#      discovery:
+#        locator:
+#          enabled: false 不修改的话之前的url还是能访问
+#          lower-case-service-id: true
+#      routes:
+#        - id: service-hi
+#          uri: lb://SERVICE-HI
+#          predicates:
+#           - path: /demo/**
+#          filters:
+#           -StripPrefix=1  转发之前将/demo去掉     此时发送localhost:8081/demo/hi?name=1323

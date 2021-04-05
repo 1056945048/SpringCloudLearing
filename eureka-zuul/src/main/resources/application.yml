@@ -1,0 +1,18 @@
+server:
+  port: 8769
+spring:
+  application:
+    name: service-zuul
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+#zuul的主要功能是路由转发和过滤器
+zuul:
+  routes:
+    api-a:
+      path: /api-a/** #以api-a/开头的请求都转发给service-ribbon服务 例如：localhost:8769/api-a/hi?name=yangkun
+      serviceId: service-ribbon
+    api-b:
+      path: /api-b/** #以api-b/开头的请求都转发给service-feign服务 例如：localhost:8769/api-b/hi?name=yangkun
+      serviceId: service-feign

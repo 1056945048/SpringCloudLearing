@@ -1,0 +1,17 @@
+server:
+  port: 8765
+spring:
+  application:
+    name: service-feign
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+feign:
+  hystrix:
+    enabled: true #Feign是自带断路器的，在D版本的Spring Cloud中，它默认关闭，我们只需要在配置文件中打开它

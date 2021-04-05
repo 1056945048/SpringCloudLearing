@@ -1,0 +1,37 @@
+spring:
+  profiles:
+    active: header_route
+
+---  #spring.profiles.active指定了程序的spring启动文件为header_route文件，在application.yml之中再建一个配置文件，
+     #语法是三个横线，在此配置文件中通过spring.profiles来配置文件名和spring.profiles.active中保持一致
+     #在cloud-2020中，自己感觉不需要这里这么配置。不需要加spring.profiles.active这个配置和spring.profiles
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: header_route
+        uri: http://httpbin.org:80/get
+        predicates: #当请求的Header中有X-Request-Id的header名，且header值为数字时，请求会被路由到uri
+          - Header=X-Request-Id, \d+
+      - id: after_route
+        uri: http://httpbin.org:80/get
+        predicates:
+          - After=2017-01-20T17:42:47.789-07:00[America/Denver]
+      - id: cookie_route
+        uri: http://httpbin.org:80/get
+        predicates:
+          - Cookie=name, forezp #请求的cookie中包含名为name,值为forezp的都会路由到该uri
+      - id: query_route
+          uri: http://httpbin.org:80/get
+          predicates:
+            - Query=foo
+            - Query=foo, ba.
+      - id: path_route
+          uri: http://httpbin.org:80/get
+          predicates:
+            - Path=/foo/{segment}
+      - id: method_route
+          uri: http://httpbin.org:80/get
+          predicates:
+            - Method=GET
+  profiles: header_route
